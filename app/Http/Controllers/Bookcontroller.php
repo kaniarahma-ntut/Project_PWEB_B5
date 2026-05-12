@@ -117,7 +117,7 @@ class BookController extends Controller
     public function update(UpdateBookRequest $request, Book $book): RedirectResponse
     {
         $data = $request->validated();
-
+        //test
         // Ganti cover jika ada file baru yang diupload
         if ($request->hasFile('cover')) {
             // Hapus cover lama dari storage
