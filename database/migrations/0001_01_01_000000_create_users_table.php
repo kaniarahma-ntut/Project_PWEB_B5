@@ -8,19 +8,40 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
+     * Tabel users: menyimpan semua akun (admin, pustakawan, anggota).
+     * Menggunakan SoftDeletes agar akun yang dinonaktifkan tidak hilang dari DB.
      */
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+
+            // Role menentukan hak akses di seluruh sistem
+            $table->enum('role', ['admin', 'pustakawan', 'anggota'])->default('anggota');
+
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('nama_lengkap');
+            $table->string('foto_profil')->nullable();
+            $table->text('alamat')->nullable();
+            $table->string('kecamatan')->nullable();
+            $table->string('no_hp', 20)->nullable();
+
+            // google_id digunakan untuk autentikasi via Google OAuth (Laravel Socialite)
+            $table->string('google_id')->nullable()->unique();
+
+            // password nullable karena login bisa hanya via Google
+            $table->string('password')->nullable();
+
             $table->rememberToken();
-            $table->timestamps();
+
+            // SoftDeletes: menambahkan kolom deleted_at
+            // Akun yang "dihapus" masih ada di DB (bisa dipulihkan)
+            $table->softDeletes();
+
+            $table->timestamps(); // created_at & updated_at
         });
 
+        // Tabel pendukung bawaan Laravel untuk reset password & session
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
             $table->string('token');
@@ -42,8 +63,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
+        Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists('users');
     }
 };
