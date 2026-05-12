@@ -43,6 +43,10 @@ return new class extends Migration
                 'Hilang',
             ])->default('Tersedia');
 
+            // SoftDeletes: eksemplar yang dihapus tetap tercatat untuk audit trail
+            // riwayat peminjaman tidak akan orphan
+            $table->softDeletes();
+
             $table->timestamps();
         });
     }
