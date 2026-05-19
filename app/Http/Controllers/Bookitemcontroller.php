@@ -11,7 +11,7 @@ use Illuminate\View\View;
 class BookItemController extends Controller
 {
     // =========================================================================
-    // INDEX — Daftar semua eksemplar (bisa difilter per buku)
+    // INDEX  semua eksemplar (bisa difilter per buku)
     // =========================================================================
 
     /**
