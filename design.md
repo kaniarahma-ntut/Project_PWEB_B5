@@ -1,6 +1,6 @@
 # Design System Documentation
 
-## 01. THE MIDNIGHT ARCHIVE
+## SMART LIBRARY
 
 ### Overview & Vibes
 > **Vibe:** Sangat profesional, maskulin, dan kokoh. Memberikan kesan sistem yang stabil, terpercaya, dan modern-industrial.
