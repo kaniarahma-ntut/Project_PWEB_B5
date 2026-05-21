@@ -9,3 +9,29 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+/* Custom CSS Rules */
+body {
+    font-family: 'Open Sans', sans-serif;
+    background-color: #f8fafc;
+}
+
+h1, h2, h3, h4, h5, h6, th {
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Custom Scrollbar for Industrial Vibe */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+    background: #BBE1FA;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #3282B8;
+}
