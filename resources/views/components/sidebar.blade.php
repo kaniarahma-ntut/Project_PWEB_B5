@@ -1,10 +1,9 @@
 <aside class="w-64 bg-dark shadow-xl hidden md:flex flex-col border-r border-dark">
-    <!-- Logo Area -->
+
     <div class="p-6 flex items-center gap-4">
         <img src="{{ asset('logo-full.png') }}" >
     </div>
 
-    <!-- Navigation -->
     <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
         <a href="#" class="flex items-center gap-3 bg-primary text-base p-3 rounded-md font-semibold shadow-md transition-all">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
@@ -31,11 +30,18 @@
     <!-- User Profile -->
     <div class="p-4 relative">
         <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-full bg-secondary flex items-center justify-center text-light font-bold">JD</div>
-            <div>
-                <p class="text-sm font-semibold text-base">John Doe</p>
-                <p class="text-xs text-light">Pustakawan</p>
-            </div>
+<div class="p-4">
+    <div class="flex items-center gap-3">
+        <img class="w-9 h-9 rounded-full object-cover border border-secondary/50"
+             src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->nama_lengkap) }}&background=0F4C75&color=fff&bold=true"
+             alt="{{ auth()->user()->nama_lengkap }}">
+
+        <div class="overflow-hidden">
+            <p class="text-sm font-semibold text-base truncate">{{ auth()->user()->nama_lengkap }}</p>
+            <p class="text-xs text-light">{{ ucfirst(auth()->user()->role) }}</p>
+        </div>
+    </div>
+</div>
         </div>
     </div>
 </aside>
