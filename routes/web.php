@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\BookItemController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PeminjamanController;
 use Illuminate\Support\Facades\Route;
 
 // =============================================================================
@@ -96,4 +97,24 @@ Route::middleware(['auth'])->group(function () {
             Route::get('dashboard', fn() => view('pustakawan.dashboard'))->name('dashboard');
         });
     });
+
+    // -------------------------------------------------------------------------
+    // MANAJEMEN PEMINJAMAN
+    // -------------------------------------------------------------------------
+
+    // Melihat data peminjaman, melihat detail, dan anggota melakukan peminjaman
+    Route::resource('peminjamans', PeminjamanController::class)
+        ->only(['index', 'store', 'show']);
+
+    // Anggota mengajukan pengembalian
+    Route::patch('peminjamans/{peminjaman}/request-return', [PeminjamanController::class, 'requestReturn'])
+        ->name('peminjamans.request-return');
+
+    // Admin/Pustakawan validasi pengembalian
+    Route::patch('peminjamans/{peminjaman}/approve-return', [PeminjamanController::class, 'approveReturn'])
+        ->name('peminjamans.approve-return');
+
+    // Admin/Pustakawan mengubah status peminjaman secara manual
+    Route::patch('peminjamans/{peminjaman}/status', [PeminjamanController::class, 'updateStatus'])
+        ->name('peminjamans.updateStatus');
 });
