@@ -83,6 +83,7 @@
 
                     <span class="ml-3">Logout Akun</span>
                 </button>
+            </form>
         </div>
     </div>
 </aside>

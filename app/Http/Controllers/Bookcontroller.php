@@ -97,6 +97,7 @@ class Bookcontroller extends Controller
         return redirect()
             ->route('books.show', $book)
             ->with('success', "Buku \"{$book->judul}\" berhasil ditambahkan.");
+            
     }
 
     // =========================================================================
