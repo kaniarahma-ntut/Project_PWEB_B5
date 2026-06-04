@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
-class BookController extends Controller
+class Bookcontroller extends Controller
 {
     // =========================================================================
     // INDEX — Tampilkan daftar buku (semua role)

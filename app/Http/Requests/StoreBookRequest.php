@@ -24,7 +24,7 @@ class StoreBookRequest extends FormRequest
         return [
             'judul'     => ['required', 'string', 'max:255'],
             'penulis'   => ['required', 'string', 'max:255'],
-            'ISBN'      => ['nullable', 'string', 'max:50'],
+            'ISBN'      => ['nullable', 'string', 'max:20'],
             'kategori'  => ['required', 'string', 'max:100'],
             'deskripsi' => ['nullable', 'string'],
             'cover'     => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'], // Max ukuran 2MB
