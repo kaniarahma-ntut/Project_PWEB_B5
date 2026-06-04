@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Katalog Buku — Smart Library')
+@section('title', 'Daftar Buku — Smart Library')
 
 @section('content')
 <style>
@@ -13,7 +13,7 @@
 
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 border-b border-[#BBE1FA] pb-6">
         <div class="mb-4 md:mb-0">
-            <h1 class="font-montserrat text-2xl font-bold text-[#1B262C]">Katalog Buku</h1>
+            <h1 class="font-montserrat text-2xl font-bold text-[#1B262C]">Daftar Buku</h1>
             <p class="text-sm font-opensans text-[#0F4C75] opacity-80 mt-1">Eksplorasi dan temukan koleksi buku di Smart Library.</p>
         </div>
 

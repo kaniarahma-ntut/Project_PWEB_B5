@@ -60,8 +60,9 @@ class Bookcontroller extends Controller
     /**
      * GET /books/{book}
      */
-    public function show(Book $book): View
+    public function show($id): View
     {
+        $book = Book::withTrashed()->findOrFail($id);
         // Load eksemplar dan riwayat peminjaman aktif
         $book->load(['bookItems', 'wishlists']);
 
@@ -97,7 +98,7 @@ class Bookcontroller extends Controller
         return redirect()
             ->route('books.show', $book)
             ->with('success', "Buku \"{$book->judul}\" berhasil ditambahkan.");
-            
+
     }
 
     // =========================================================================

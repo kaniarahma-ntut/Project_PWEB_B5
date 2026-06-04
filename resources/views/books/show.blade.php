@@ -72,4 +72,53 @@
     </div>
 </div>
 
+<div class="bg-white rounded-2xl border border-[#BBE1FA] shadow-[0_2px_16px_rgba(27,38,44,0.04)] overflow-hidden">
+    <div class="p-6 border-b border-[#BBE1FA] flex justify-between items-center bg-[#F4F9FD]/50">
+        <h3 class="text-lg font-montserrat font-bold text-[#1B262C]">Daftar Eksemplar</h3>
+        @if(auth()->user()->isAdmin() || auth()->user()->isPustakawan())
+            <a href="{{ route('book-items.create', $book->id) }}" class="bg-[#1B262C] hover:bg-[#3282B8] text-white text-xs font-bold py-2 px-4 rounded-lg transition">
+                + Tambah Eksemplar
+            </a>
+        @endif
+    </div>
+
+    <div class="overflow-x-auto">
+        <table class="w-full text-left">
+            <thead>
+                <tr class="bg-gray-50 text-[#0F4C75] text-[10px] uppercase font-bold tracking-wider">
+                    <th class="px-6 py-4">Kode Item</th>
+                    <th class="px-6 py-4">Status</th>
+                    <th class="px-6 py-4">Kondisi</th>
+                    <th class="px-6 py-4 text-right">Aksi</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-[#BBE1FA]">
+                @forelse($book->bookItems as $item)
+                    <tr class="hover:bg-[#F4F9FD] transition-colors">
+                        <td class="px-6 py-4 font-bold text-[#BBE1FA]">{{ $item->kode_item }}</td>
+                        <td class="px-6 py-4">
+                            <span class="px-2 py-1 rounded text-[10px] font-bold uppercase {{ $item->status_ketersediaan == 'Tersedia' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700' }}">
+                                {{ $item->status_ketersediaan }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-sm font-semibold text-[#0F4C75]">{{ $item->kondisi }}</td>
+                        <td class="px-6 py-4 text-right">
+                            <div class="flex justify-end gap-2">
+                                <a href="{{ route('book-items.show', $item->id) }}" class="text-[#3282B8] hover:text-[#1B262C] text-xs font-bold">Detail</a>
+                                @if(auth()->user()->isAdmin() || auth()->user()->isPustakawan())
+                                    <a href="{{ route('book-items.edit', $item->id) }}" class="text-[#0F4C75] hover:text-[#1B262C] text-xs font-bold">Edit</a>
+                                @endif
+                            </div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="4" class="px-6 py-8 text-center text-[#0F4C75] opacity-60 italic">Belum ada eksemplar terdaftar untuk buku ini.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
+
 @endsection
