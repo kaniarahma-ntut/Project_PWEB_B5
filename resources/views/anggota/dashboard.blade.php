@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard')
+@section('title', 'Tambah Buku Baru')
 
 @section('content')
-test dasbrot
+dasbrot anggota
 @endsection

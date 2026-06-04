@@ -32,6 +32,18 @@
     <div class="flex-1 flex flex-col min-h-screen overflow-y-auto">
 
         <main class="p-6 md:p-8">
+
+            @if (session('success'))
+                <x-alert type="success" message="{{ session('success') }}" />
+            @endif
+
+            @if (session('error'))
+                <x-alert type="error" message="{{ session('error') }}" />
+            @endif
+
+            @if (session('info'))
+                <x-alert type="info" message="{{ session('info') }}" />
+            @endif
             @yield('content')
         </main>
     </div>

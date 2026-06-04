@@ -4,10 +4,12 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\BookItemController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PeminjamanController;
+use App\Http\Middleware\CheckRole; // Pastikan ini ada!
 use Illuminate\Support\Facades\Route;
 
 // =============================================================================
-// AUTH — Google OAuth (tidak butuh middleware auth)
+// AUTH — Google OAuth
 // =============================================================================
 
 Route::prefix('auth')->name('auth.')->group(function () {
@@ -15,49 +17,43 @@ Route::prefix('auth')->name('auth.')->group(function () {
     Route::get('google/callback', [AuthController::class, 'handleGoogleCallback'])->name('google.callback');
 });
 
-// Route login sederhana (halaman landing / login page)
+// Route login halaman landing
 Route::get('/login', fn() => view('auth.login'))->name('login');
 
-// Logout (POST agar tidak bisa dipanggil via URL langsung)
+// Logout
 Route::post('/logout', [AuthController::class, 'logout'])
      ->name('logout')
      ->middleware('auth');
 
 // =============================================================================
-// AREA TERPROTEKSI — semua route di bawah ini wajib sudah login
+// AREA TERPROTEKSI — Semua route di dalam sini wajib sudah login
 // =============================================================================
 
 Route::middleware(['auth'])->group(function () {
 
     // -------------------------------------------------------------------------
-    // DASHBOARD — setiap role punya view berbeda
+    // DASHBOARD UMUM (Anggota / Default)
     // -------------------------------------------------------------------------
+    // BARIS INI YANG TADI TERHAPUS:
     Route::get('/',           fn() => redirect()->route('dashboard'));
-    Route::get('/dashboard',  fn() => view('dashboard'))->name('dashboard');
+    Route::get('/dashboard',  fn() => view('anggota.dashboard'))->name('dashboard');
 
     // -------------------------------------------------------------------------
-    // BUKU — Resource route + restore (Admin & Pustakawan)
+    // BUKU
     // -------------------------------------------------------------------------
-
-    // Resource CRUD standar: index, create, store, show, edit, update, destroy
     Route::resource('books', BookController::class);
-
-    // Restore buku yang dinonaktifkan (Admin only — dicek di dalam controller)
     Route::patch('books/{book}/restore', [BookController::class, 'restore'])
          ->name('books.restore')
-         ->withTrashed(); // Izinkan route model binding resolve soft-deleted model
+         ->withTrashed();
 
     // -------------------------------------------------------------------------
-    // EKSEMPLAR BUKU (BookItem) — nested di bawah /books/{book}/items
+    // EKSEMPLAR BUKU (BookItem)
     // -------------------------------------------------------------------------
-
-    // Nested: tambah & list eksemplar milik sebuah buku
     Route::prefix('books/{book}/items')->name('book-items.')->group(function () {
         Route::get('create',  [BookItemController::class, 'create'])->name('create');
         Route::post('/',      [BookItemController::class, 'store'])->name('store');
     });
 
-    // Shallow: operasi pada eksemplar individual (tidak perlu konteks book_id di URL)
     Route::prefix('book-items')->name('book-items.')->group(function () {
         Route::get('/',                         [BookItemController::class, 'index'])->name('index');
         Route::get('{bookItem}',                [BookItemController::class, 'show'])->name('show');
@@ -71,29 +67,33 @@ Route::middleware(['auth'])->group(function () {
     // -------------------------------------------------------------------------
     // MANAJEMEN AKUN (User)
     // -------------------------------------------------------------------------
-
-    // Resource CRUD: index (admin), show, create (admin), store (admin),
-    //                edit, update, destroy (admin)
     Route::resource('users', UserController::class);
-
-    // Restore akun yang dinonaktifkan (Admin only)
     Route::patch('users/{user}/restore', [UserController::class, 'restore'])
          ->name('users.restore');
 
     // -------------------------------------------------------------------------
     // ROUTE KHUSUS ROLE — Dashboard Admin & Pustakawan
     // -------------------------------------------------------------------------
-
-    Route::middleware(['auth'])->group(function () {
-
-        // Admin dashboard
-        Route::prefix('admin')->name('admin.')->group(function () {
-            Route::get('dashboard', fn() => view('admin.dashboard'))->name('dashboard');
-        });
-
-        // Pustakawan dashboard
-        Route::prefix('pustakawan')->name('pustakawan.')->group(function () {
-            Route::get('dashboard', fn() => view('pustakawan.dashboard'))->name('dashboard');
-        });
+    Route::prefix('admin')->name('admin.')->middleware([CheckRole::class.':admin'])->group(function () {
+        Route::get('dashboard', fn() => view('admin.dashboard'))->name('dashboard');
     });
+
+    Route::prefix('pustakawan')->name('pustakawan.')->middleware([CheckRole::class.':pustakawan'])->group(function () {
+        Route::get('dashboard', fn() => view('pustakawan.dashboard'))->name('dashboard');
+    });
+
+    // -------------------------------------------------------------------------
+    // MANAJEMEN PEMINJAMAN
+    // -------------------------------------------------------------------------
+    Route::resource('peminjamans', PeminjamanController::class)
+        ->only(['index', 'store', 'show']);
+
+    Route::patch('peminjamans/{peminjaman}/request-return', [PeminjamanController::class, 'requestReturn'])
+        ->name('peminjamans.request-return');
+
+    Route::patch('peminjamans/{peminjaman}/approve-return', [PeminjamanController::class, 'approveReturn'])
+        ->name('peminjamans.approve-return');
+
+    Route::patch('peminjamans/{peminjaman}/status', [PeminjamanController::class, 'updateStatus'])
+        ->name('peminjamans.updateStatus');
 });
