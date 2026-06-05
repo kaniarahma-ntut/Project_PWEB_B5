@@ -24,21 +24,6 @@ class AuthController extends Controller
         return Socialite::driver('google')->redirect();
     }
 
-    // =========================================================================
-    // CALLBACK — Terima data dari Google & proses login/register
-    // =========================================================================
-
-    /**
-     * GET /auth/google/callback
-     *
-     * Alur:
-     * 1. Ambil data user dari Google.
-     * 2. Cari user di DB berdasarkan google_id atau email.
-     * 3. Jika belum ada → buat akun baru sebagai 'anggota'.
-     * 4. Jika sudah ada namun google_id belum tersimpan → update google_id.
-     * 5. Cek apakah akun dinonaktifkan (soft-deleted) → tolak login.
-     * 6. Login user dan redirect ke dashboard.
-     */
     public function handleGoogleCallback(): RedirectResponse
     {
         try {
@@ -65,8 +50,6 @@ class AuthController extends Controller
         }
 
         if ($user) {
-            // Akun sudah ada: perbarui google_id jika belum tersimpan
-            // (kasus: user pernah didaftarkan manual oleh admin)
             if (! $user->google_id) {
                 $user->update(['google_id' => $googleUser->getId()]);
             }
