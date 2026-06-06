@@ -133,15 +133,6 @@
 
             <div>
                 <p class="font-montserrat text-xs font-bold text-[#1B262C] uppercase tracking-wider mb-2">
-                    Kecamatan
-                </p>
-                <p class="text-sm font-semibold text-[#0F4C75]">
-                    {{ $user->kecamatan ?? '-' }}
-                </p>
-            </div>
-
-            <div>
-                <p class="font-montserrat text-xs font-bold text-[#1B262C] uppercase tracking-wider mb-2">
                     Status Akun
                 </p>
 

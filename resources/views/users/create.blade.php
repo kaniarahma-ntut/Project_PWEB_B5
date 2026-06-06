@@ -131,23 +131,6 @@
                     @enderror
                 </div>
 
-                {{-- KECAMATAN --}}
-                <div>
-                    <label class="block font-montserrat text-xs font-bold text-[#1B262C] uppercase tracking-wider mb-2">
-                        Kecamatan
-                    </label>
-
-                    <input type="text"
-                           name="kecamatan"
-                           value="{{ old('kecamatan') }}"
-                           placeholder="Contoh: Tenggarang"
-                           class="w-full px-4 py-3 rounded-xl border border-[#BBE1FA] bg-[#F4F9FD] focus:bg-white focus:border-[#3282B8] focus:ring focus:ring-[#3282B8]/20 text-[#0F4C75] font-semibold text-sm transition-colors outline-none placeholder-[#0F4C75]/40">
-
-                    @error('kecamatan')
-                        <span class="text-[#D32F2F] text-xs font-bold mt-1.5 block">{{ $message }}</span>
-                    @enderror
-                </div>
-
                 {{-- FOTO PROFIL --}}
                 <div class="col-span-1 md:col-span-2">
                     <label class="block font-montserrat text-xs font-bold text-[#1B262C] uppercase tracking-wider mb-2">

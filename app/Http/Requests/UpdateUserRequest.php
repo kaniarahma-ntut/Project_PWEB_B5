@@ -33,7 +33,6 @@ class UpdateUserRequest extends FormRequest
             'nama_lengkap' => ['required', 'string', 'max:255'],
             'foto_profil' => ['nullable', 'image', 'max:2048'],
             'alamat' => ['nullable', 'string'],
-            'kecamatan' => ['nullable', 'string', 'max:100'],
             'no_hp' => ['nullable', 'string', 'max:20'],
             'password' => ['nullable', 'string', 'min:8'],
         ];

@@ -169,9 +169,6 @@
                                 <p class="font-opensans text-sm font-semibold text-[#0F4C75]">
                                     {{ $user->no_hp ?? '-' }}
                                 </p>
-                                <p class="font-opensans text-xs text-[#0F4C75] opacity-60 mt-0.5">
-                                    {{ $user->kecamatan ?? '-' }}
-                                </p>
                             </td>
 
                             {{-- Status --}}
