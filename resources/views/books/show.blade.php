@@ -42,18 +42,6 @@
     @endif
 </div>
 
-{{-- ALERT --}}
-@if (session('success'))
-    <div class="mb-6 px-4 py-3 rounded-xl bg-green-100 text-green-700 font-semibold border border-green-200">
-        {{ session('success') }}
-    </div>
-@endif
-
-@if (session('error'))
-    <div class="mb-6 px-4 py-3 rounded-xl bg-red-100 text-red-700 font-semibold border border-red-200">
-        {{ session('error') }}
-    </div>
-@endif
 
 <div class="bg-white rounded-lg border border-[#BBE1FA] shadow-sm overflow-hidden flex flex-col md:flex-row mb-8 relative">
     @if($book->trashed())
@@ -62,7 +50,7 @@
 
     <div class="w-full md:w-1/3 lg:w-1/4 bg-[#F8FAFC] flex items-center justify-center p-6 border-b md:border-b-0 md:border-r border-[#BBE1FA]">
         @if($book->cover)
-            <img src="{{ asset('storage/' . $book->cover) }}"
+            <img src="{{ Storage::url($book->cover) }}"
                  alt="Cover {{ $book->judul }}"
                  class="max-w-full h-auto rounded shadow-sm">
         @else
