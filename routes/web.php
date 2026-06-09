@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Controllers\Authcontroller;
-use App\Http\Controllers\Bookcontroller;
-use App\Http\Controllers\Bookitemcontroller;
-use App\Http\Controllers\Usercontroller;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BookController;
+use App\Http\Controllers\BookItemController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Middleware\CheckRole; // Pastikan ini ada!
 use Illuminate\Support\Facades\Route;
@@ -13,15 +13,15 @@ use Illuminate\Support\Facades\Route;
 // =============================================================================
 
 Route::prefix('auth')->name('auth.')->group(function () {
-    Route::get('google',          [Authcontroller::class, 'redirectToGoogle'])->name('google');
-    Route::get('google/callback', [Authcontroller::class, 'handleGoogleCallback'])->name('google.callback');
+    Route::get('google',          [AuthController::class, 'redirectToGoogle'])->name('google');
+    Route::get('google/callback', [AuthController::class, 'handleGoogleCallback'])->name('google.callback');
 });
 
 // Route login halaman landing
 Route::get('/login', fn() => view('auth.login'))->name('login');
 
 // Logout
-Route::post('/logout', [Authcontroller::class, 'logout'])
+Route::post('/logout', [AuthController::class, 'logout'])
      ->name('logout')
      ->middleware('auth');
 
@@ -41,8 +41,8 @@ Route::middleware(['auth'])->group(function () {
     // -------------------------------------------------------------------------
     // BUKU
     // -------------------------------------------------------------------------
-    Route::resource('books', Bookcontroller::class);
-    Route::patch('books/{book}/restore', [Bookcontroller::class, 'restore'])
+    Route::resource('books', BookController::class);
+    Route::patch('books/{book}/restore', [BookController::class, 'restore'])
          ->name('books.restore')
          ->withTrashed();
 
@@ -50,25 +50,25 @@ Route::middleware(['auth'])->group(function () {
     // EKSEMPLAR BUKU (BookItem)
     // -------------------------------------------------------------------------
     Route::prefix('books/{book}/items')->name('book-items.')->group(function () {
-        Route::get('create',  [Bookitemcontroller::class, 'create'])->name('create');
-        Route::post('/',      [Bookitemcontroller::class, 'store'])->name('store');
+        Route::get('create',  [BookItemController::class, 'create'])->name('create');
+        Route::post('/',      [BookItemController::class, 'store'])->name('store');
     });
 
     Route::prefix('book-items')->name('book-items.')->group(function () {
-        Route::get('/',                         [Bookitemcontroller::class, 'index'])->name('index');
-        Route::get('{bookItem}',                [Bookitemcontroller::class, 'show'])->name('show');
-        Route::get('{bookItem}/edit',           [Bookitemcontroller::class, 'edit'])->name('edit');
-        Route::put('{bookItem}',                [Bookitemcontroller::class, 'update'])->name('update');
-        Route::delete('{bookItem}',             [Bookitemcontroller::class, 'destroy'])->name('destroy');
-        Route::patch('{bookItem}/status',       [Bookitemcontroller::class, 'updateStatus'])->name('updateStatus');
-        Route::patch('{bookItem}/restore',      [Bookitemcontroller::class, 'restore'])->name('restore');
+        Route::get('/',                         [BookItemController::class, 'index'])->name('index');
+        Route::get('{bookItem}',                [BookItemController::class, 'show'])->name('show');
+        Route::get('{bookItem}/edit',           [BookItemController::class, 'edit'])->name('edit');
+        Route::put('{bookItem}',                [BookItemController::class, 'update'])->name('update');
+        Route::delete('{bookItem}',             [BookItemController::class, 'destroy'])->name('destroy');
+        Route::patch('{bookItem}/status',       [BookItemController::class, 'updateStatus'])->name('updateStatus');
+        Route::patch('{bookItem}/restore',      [BookItemController::class, 'restore'])->name('restore');
     });
 
     // -------------------------------------------------------------------------
     // MANAJEMEN AKUN (User)
     // -------------------------------------------------------------------------
-    Route::resource('users', Usercontroller::class);
-    Route::patch('users/{user}/restore', [Usercontroller::class, 'restore'])
+    Route::resource('users', UserController::class);
+    Route::patch('users/{user}/restore', [UserController::class, 'restore'])
          ->name('users.restore');
 
     // -------------------------------------------------------------------------
