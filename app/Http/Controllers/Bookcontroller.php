@@ -126,7 +126,7 @@ class BookController extends Controller
             if ($book->cover) {
                 Storage::disk('public')->delete($book->cover);
             }
-            $data['cover'] = $request->file('cover')->store('covers', 'public');
+            $data['cover'] = $request->file('cover')->store('covers', 's3');
         }
 
         $book->update($data);
