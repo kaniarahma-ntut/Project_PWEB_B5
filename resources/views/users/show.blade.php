@@ -9,6 +9,10 @@
     .font-opensans { font-family: 'Open Sans', sans-serif; }
 </style>
 
+@php
+    $statusVerifikasi = $user->status_verifikasi ?? 'approved';
+@endphp
+
 <div class="font-opensans text-[#0F4C75] p-6 sm:p-8 w-full">
 
     {{-- HEADER --}}
@@ -53,7 +57,7 @@
 
                 <div class="w-20 h-20 rounded-2xl bg-[#BBE1FA]/60 border border-[#BBE1FA] flex items-center justify-center overflow-hidden">
                     @if ($user->foto_profil)
-                        <img src="{{ asset('storage/' . $user->foto_profil) }}"
+                        <img src="{{ str_starts_with($user->foto_profil, 'http') ? $user->foto_profil : asset('storage/' . $user->foto_profil) }}"
                              alt="Foto {{ $user->nama_lengkap }}"
                              class="w-full h-full object-cover">
                     @else
@@ -72,10 +76,24 @@
                         {{ $user->email }}
                     </p>
 
-                    <div class="flex gap-2 mt-3">
+                    <div class="flex flex-wrap gap-2 mt-3">
                         <span class="px-3 py-1 rounded-md bg-[#3282B8]/10 text-[#3282B8] text-[10px] font-montserrat font-bold uppercase tracking-wider">
                             {{ $user->role }}
                         </span>
+
+                        @if ($statusVerifikasi === 'pending')
+                            <span class="px-3 py-1 rounded-md bg-yellow-100 text-yellow-700 text-[10px] font-montserrat font-bold uppercase tracking-wider">
+                                Menunggu Verifikasi
+                            </span>
+                        @elseif ($statusVerifikasi === 'rejected')
+                            <span class="px-3 py-1 rounded-md bg-red-100 text-red-700 text-[10px] font-montserrat font-bold uppercase tracking-wider">
+                                Ditolak
+                            </span>
+                        @else
+                            <span class="px-3 py-1 rounded-md bg-green-100 text-green-700 text-[10px] font-montserrat font-bold uppercase tracking-wider">
+                                Disetujui
+                            </span>
+                        @endif
 
                         @if ($user->trashed())
                             <span class="px-3 py-1 rounded-md bg-red-100 text-red-700 text-[10px] font-montserrat font-bold uppercase tracking-wider">
@@ -129,6 +147,26 @@
                 <p class="text-sm font-semibold text-[#0F4C75]">
                     {{ $user->no_hp ?? '-' }}
                 </p>
+            </div>
+
+            <div>
+                <p class="font-montserrat text-xs font-bold text-[#1B262C] uppercase tracking-wider mb-2">
+                    Status Verifikasi
+                </p>
+
+                @if ($statusVerifikasi === 'pending')
+                    <p class="text-sm font-semibold text-yellow-700">
+                        Menunggu Verifikasi
+                    </p>
+                @elseif ($statusVerifikasi === 'rejected')
+                    <p class="text-sm font-semibold text-red-700">
+                        Ditolak
+                    </p>
+                @else
+                    <p class="text-sm font-semibold text-green-700">
+                        Disetujui
+                    </p>
+                @endif
             </div>
 
             <div>
