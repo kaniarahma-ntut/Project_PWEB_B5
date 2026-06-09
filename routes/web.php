@@ -5,6 +5,7 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\BookItemController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PeminjamanController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Middleware\CheckRole; // Pastikan ini ada!
 use Illuminate\Support\Facades\Route;
 
@@ -31,13 +32,28 @@ Route::post('/logout', [AuthController::class, 'logout'])
 
 Route::middleware(['auth'])->group(function () {
 
-    // -------------------------------------------------------------------------
-    // DASHBOARD UMUM (Anggota / Default)
-    // -------------------------------------------------------------------------
-    // BARIS INI YANG TADI TERHAPUS:
-    Route::get('/',           fn() => redirect()->route('dashboard'));
-    Route::get('/dashboard',  fn() => view('anggota.dashboard'))->name('dashboard');
+// =========================================================================
+    // DASHBOARD UMUM & PENGATUR LALU LINTAS ROLE
+    // =========================================================================
+    Route::get('/', fn() => redirect()->route('dashboard'));
 
+    Route::get('/dashboard', function () {
+        $user = auth()->user();
+
+        // Cek jika yang login adalah Admin
+        if ($user->isAdmin()) {
+            return redirect()->route('admin.dashboard');
+        }
+
+        // Cek jika yang login adalah Pustakawan
+        if ($user->isPustakawan()) {
+            return redirect()->route('pustakawan.dashboard');
+        }
+
+        // Jika bukan keduanya (berarti Anggota), tampilkan view anggota
+        return view('anggota.dashboard');
+
+    })->name('dashboard');
     // -------------------------------------------------------------------------
     // BUKU
     // -------------------------------------------------------------------------
@@ -76,11 +92,11 @@ Route::middleware(['auth'])->group(function () {
     // -------------------------------------------------------------------------
     Route::prefix('admin')->name('admin.')->middleware([CheckRole::class.':admin'])->group(function () {
         Route::get('dashboard', fn() => view('admin.dashboard'))->name('dashboard');
-        Route::get('in', fn() => view('admin.dashboard'))->name('dashboard');
+        Route::get('in', [DashboardController::class, 'indexAdmin'])->name('dashboard');
     });
 
     Route::prefix('pustakawan')->name('pustakawan.')->middleware([CheckRole::class.':pustakawan'])->group(function () {
-        Route::get('dashboard', fn() => view('pustakawan.dashboard'))->name('dashboard');
+        Route::get('dashboard', [DashboardController::class, 'indexPustakawan'])->name('dashboard');
     });
 
     // -------------------------------------------------------------------------
