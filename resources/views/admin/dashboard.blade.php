@@ -202,17 +202,17 @@ document.addEventListener("DOMContentLoaded", function() {
     new Chart(trendCtx, {
         type: 'bar',
         data: {
-            labels: ['Jan','Feb','Mar','Apr','Mei','Jun'],
+            labels: @json($labelsBulan),
             datasets: [
                 {
                     label: 'Dipinjam',
-                    data: [52, 68, 45, 80, 74, 90], // Placeholder tren bulanan
+                    data: @json($trenDipinjam), // Data asli dari database
                     backgroundColor: '#1B262C',
                     borderRadius: 4,
                 },
                 {
                     label: 'Dikembalikan',
-                    data: [48, 60, 50, 72, 70, 82], // Placeholder tren bulanan
+                    data: @json($trenDikembalikan), // Data asli dari database
                     backgroundColor: '#3282B8',
                     borderRadius: 4,
                 }

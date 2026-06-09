@@ -37,7 +37,7 @@ Route::middleware(['auth'])->group(function () {
     // =========================================================================
     Route::get('/', fn() => redirect()->route('dashboard'));
 
-    Route::get('/dashboard', function () {
+Route::get('/dashboard', function () {
         $user = auth()->user();
 
         // Cek jika yang login adalah Admin
@@ -50,8 +50,8 @@ Route::middleware(['auth'])->group(function () {
             return redirect()->route('pustakawan.dashboard');
         }
 
-        // Jika bukan keduanya (berarti Anggota), tampilkan view anggota
-        return view('anggota.dashboard');
+        // UBAH BARIS INI: Panggil method indexAnggota di DashboardController
+        return app(\App\Http\Controllers\DashboardController::class)->indexAnggota();
 
     })->name('dashboard');
     // -------------------------------------------------------------------------
@@ -91,9 +91,9 @@ Route::middleware(['auth'])->group(function () {
     // ROUTE KHUSUS ROLE — Dashboard Admin & Pustakawan
     // -------------------------------------------------------------------------
     Route::prefix('admin')->name('admin.')->middleware([CheckRole::class.':admin'])->group(function () {
-        Route::get('dashboard', fn() => view('admin.dashboard'))->name('dashboard');
-        Route::get('in', [DashboardController::class, 'indexAdmin'])->name('dashboard');
+        Route::get('dashboard', [DashboardController::class, 'indexAdmin'])->name('dashboard');
     });
+
 
     Route::prefix('pustakawan')->name('pustakawan.')->middleware([CheckRole::class.':pustakawan'])->group(function () {
         Route::get('dashboard', [DashboardController::class, 'indexPustakawan'])->name('dashboard');
