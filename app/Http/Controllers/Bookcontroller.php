@@ -90,7 +90,7 @@ class BookController extends Controller
 
         // Upload cover jika ada
         if ($request->hasFile('cover')) {
-            $data['cover'] = $request->file('cover')->store('covers', 'public');
+            $data['cover'] = $request->file('cover')->store('covers', 's3');
         }
 
         $book = Book::create($data);
@@ -122,10 +122,14 @@ class BookController extends Controller
         //test
         // Ganti cover jika ada file baru yang diupload
         if ($request->hasFile('cover')) {
-            // Hapus cover lama dari storage
+
+            // 1. Cek dulu, apakah buku ini SEBELUMNYA punya cover?
+            // Jika ada, hapus cover lamanya dari storage (S3/Lokal)
             if ($book->cover) {
-                Storage::disk('public')->delete($book->cover);
+                Storage::delete($book->cover);
             }
+
+            // 2. Simpan cover yang baru
             $data['cover'] = $request->file('cover')->store('covers', 's3');
         }
 
