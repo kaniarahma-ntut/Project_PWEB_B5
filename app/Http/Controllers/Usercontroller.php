@@ -32,6 +32,11 @@ class UserController extends Controller
             $query->where('role', $role);
         }
 
+        // Filter status verifikasi
+        if ($statusVerifikasi = $request->input('status_verifikasi')) {
+            $query->where('status_verifikasi', $statusVerifikasi);
+        }
+
         // Filter aktif / nonaktif
         if ($request->input('tampilkan') === 'nonaktif') {
             $query->onlyTrashed();
@@ -97,7 +102,12 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request): RedirectResponse
     {
+        $this->authorizeAdmin();
+
         $data = $request->validated();
+
+        // Akun yang dibuat langsung oleh admin otomatis disetujui
+        $data['status_verifikasi'] = User::STATUS_APPROVED;
 
         // Hash password sebelum disimpan
         $data['password'] = Hash::make($data['password']);
@@ -120,7 +130,8 @@ class UserController extends Controller
 
     /**
      * GET /users/{user}/edit
-     * Admin: semua akun. Pustakawan/Anggota: hanya diri sendiri.
+     * Admin: semua akun.
+     * Pustakawan/Anggota: hanya diri sendiri.
      */
     public function edit(Request $request, int $id): View
     {
@@ -152,13 +163,14 @@ class UserController extends Controller
         // Hanya admin yang boleh mengubah role
         if (! $authUser->isAdmin()) {
             unset($data['role']);
+            unset($data['status_verifikasi']);
         }
 
         // Hash password baru jika diisi
         if (! empty($data['password'])) {
             $data['password'] = Hash::make($data['password']);
         } else {
-            unset($data['password']); // Jangan update password jika kosong
+            unset($data['password']);
         }
 
         // Ganti foto profil jika ada file baru
@@ -166,6 +178,7 @@ class UserController extends Controller
             if ($user->foto_profil) {
                 Storage::disk('public')->delete($user->foto_profil);
             }
+
             $data['foto_profil'] = $request->file('foto_profil')->store('profiles', 'public');
         }
 
@@ -174,6 +187,56 @@ class UserController extends Controller
         return redirect()
             ->route('users.show', $user)
             ->with('success', 'Data akun berhasil diperbarui.');
+    }
+
+    // =========================================================================
+    // APPROVE — Setujui akun — Admin only
+    // =========================================================================
+
+    /**
+     * PATCH /users/{user}/approve
+     */
+    public function approve(int $id): RedirectResponse
+    {
+        $this->authorizeAdmin();
+
+        $user = User::withTrashed()->findOrFail($id);
+
+        $user->update([
+            'status_verifikasi' => User::STATUS_APPROVED,
+        ]);
+
+        return redirect()
+            ->route('users.index')
+            ->with('success', "Akun \"{$user->nama_lengkap}\" berhasil disetujui.");
+    }
+
+    // =========================================================================
+    // REJECT — Tolak akun — Admin only
+    // =========================================================================
+
+    /**
+     * PATCH /users/{user}/reject
+     */
+    public function reject(int $id): RedirectResponse
+    {
+        $this->authorizeAdmin();
+
+        $user = User::withTrashed()->findOrFail($id);
+        $authUser = request()->user();
+
+        // Admin tidak boleh menolak dirinya sendiri
+        if ($authUser->id === $user->id) {
+            return back()->with('error', 'Anda tidak dapat menolak akun Anda sendiri.');
+        }
+
+        $user->update([
+            'status_verifikasi' => User::STATUS_REJECTED,
+        ]);
+
+        return redirect()
+            ->route('users.index')
+            ->with('success', "Akun \"{$user->nama_lengkap}\" berhasil ditolak.");
     }
 
     // =========================================================================
@@ -187,7 +250,7 @@ class UserController extends Controller
     {
         $this->authorizeAdmin();
 
-        $user    = User::findOrFail($id);
+        $user = User::findOrFail($id);
         $authUser = request()->user();
 
         // Admin tidak bisa menonaktifkan dirinya sendiri
@@ -195,7 +258,7 @@ class UserController extends Controller
             return back()->with('error', 'Anda tidak dapat menonaktifkan akun Anda sendiri.');
         }
 
-        $user->delete(); // SoftDelete
+        $user->delete();
 
         return redirect()
             ->route('users.index')
@@ -227,7 +290,6 @@ class UserController extends Controller
 
     /**
      * Abort 403 jika bukan admin.
-     * Dipakai di method yang khusus admin agar tidak repetitif.
      */
     private function authorizeAdmin(): void
     {

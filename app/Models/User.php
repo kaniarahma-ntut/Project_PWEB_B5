@@ -17,16 +17,12 @@ class User extends Authenticatable
     // =========================================================================
 
     /**
-     * Nama tabel menggunakan default Laravel ('users').
-     * Tidak perlu deklarasi $table.
-     */
-
-    /**
-     * Kolom-kolom yang boleh diisi secara massal (mass assignment).
-     * Termasuk role dan google_id untuk OAuth.
+     * Kolom-kolom yang boleh diisi secara massal.
+     * Termasuk role, status_verifikasi, dan google_id untuk OAuth.
      */
     protected $fillable = [
         'role',
+        'status_verifikasi',
         'email',
         'nama_lengkap',
         'foto_profil',
@@ -38,7 +34,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Kolom yang disembunyikan saat serialisasi (API response / toArray).
+     * Kolom yang disembunyikan saat serialisasi.
      */
     protected $hidden = [
         'password',
@@ -59,7 +55,7 @@ class User extends Authenticatable
     }
 
     // =========================================================================
-    // KONSTANTA ROLE — hindari magic string di seluruh codebase
+    // KONSTANTA ROLE
     // =========================================================================
 
     const ROLE_ADMIN      = 'admin';
@@ -67,7 +63,15 @@ class User extends Authenticatable
     const ROLE_ANGGOTA    = 'anggota';
 
     // =========================================================================
-    // HELPER METHOD — cek role secara ekspresif
+    // KONSTANTA STATUS VERIFIKASI AKUN
+    // =========================================================================
+
+    const STATUS_PENDING  = 'pending';
+    const STATUS_APPROVED = 'approved';
+    const STATUS_REJECTED = 'rejected';
+
+    // =========================================================================
+    // HELPER METHOD — CEK ROLE
     // =========================================================================
 
     public function isAdmin(): bool
@@ -83,6 +87,25 @@ class User extends Authenticatable
     public function isAnggota(): bool
     {
         return $this->role === self::ROLE_ANGGOTA;
+    }
+
+    // =========================================================================
+    // HELPER METHOD — CEK STATUS VERIFIKASI
+    // =========================================================================
+
+    public function isPending(): bool
+    {
+        return $this->status_verifikasi === self::STATUS_PENDING;
+    }
+
+    public function isApproved(): bool
+    {
+        return $this->status_verifikasi === self::STATUS_APPROVED;
+    }
+
+    public function isRejected(): bool
+    {
+        return $this->status_verifikasi === self::STATUS_REJECTED;
     }
 
     // =========================================================================

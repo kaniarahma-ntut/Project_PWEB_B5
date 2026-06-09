@@ -42,7 +42,6 @@
     @endif
 </div>
 
-
 <div class="bg-white rounded-lg border border-[#BBE1FA] shadow-sm overflow-hidden flex flex-col md:flex-row mb-8 relative">
     @if($book->trashed())
         <div class="absolute inset-0 bg-red-500/10 z-10 pointer-events-none"></div>
@@ -101,12 +100,34 @@
     </div>
 </div>
 
+@php
+    $jumlahPeminjamanAktif = 0;
+
+    if (auth()->user()->isAnggota()) {
+        $jumlahPeminjamanAktif = auth()->user()
+            ->peminjamans()
+            ->whereIn('status_peminjaman', [
+                \App\Models\Peminjaman::STATUS_DIPINJAM,
+                \App\Models\Peminjaman::STATUS_VALIDASI_PENGEMBALIAN,
+            ])
+            ->count();
+    }
+@endphp
+
 {{-- DAFTAR EKSEMPLAR --}}
 <div class="bg-white rounded-2xl border border-[#BBE1FA] shadow-[0_2px_16px_rgba(27,38,44,0.04)] overflow-hidden">
     <div class="p-6 border-b border-[#BBE1FA] flex justify-between items-center bg-[#F4F9FD]/50">
-        <h3 class="text-lg font-montserrat font-bold text-[#1B262C]">
-            Daftar Eksemplar
-        </h3>
+        <div>
+            <h3 class="text-lg font-montserrat font-bold text-[#1B262C]">
+                Daftar Eksemplar
+            </h3>
+
+            @if(auth()->user()->isAnggota())
+                <p class="text-xs text-[#0F4C75] opacity-70 mt-1">
+                    Peminjaman aktif Anda: {{ $jumlahPeminjamanAktif }} / 2 buku.
+                </p>
+            @endif
+        </div>
 
         @if(auth()->user()->isAdmin() || auth()->user()->isPustakawan())
             <a href="{{ route('book-items.create', $book->id) }}"
@@ -172,7 +193,7 @@
                                     </a>
                                 @endif
 
-                                @if(auth()->user()->isAnggota() && $item->status_ketersediaan === 'Tersedia')
+                                @if(auth()->user()->isAnggota() && $item->status_ketersediaan === 'Tersedia' && $jumlahPeminjamanAktif < 2)
                                     <form action="{{ route('peminjamans.store') }}"
                                           method="POST"
                                           onsubmit="return confirm('Pinjam eksemplar buku ini?')">
@@ -185,6 +206,10 @@
                                             Pinjam
                                         </button>
                                     </form>
+                                @elseif(auth()->user()->isAnggota() && $jumlahPeminjamanAktif >= 2)
+                                    <span class="text-[10px] font-bold text-red-600 uppercase tracking-wider">
+                                        Batas pinjam tercapai
+                                    </span>
                                 @elseif(auth()->user()->isAnggota() && $item->status_ketersediaan !== 'Tersedia')
                                     <span class="text-[10px] font-bold text-[#0F4C75]/50 uppercase tracking-wider">
                                         Tidak tersedia

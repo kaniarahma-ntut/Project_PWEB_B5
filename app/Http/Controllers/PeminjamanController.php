@@ -95,8 +95,9 @@ class PeminjamanController extends Controller
      *
      * Alur:
      * 1. Anggota memilih eksemplar buku yang tersedia.
-     * 2. Sistem membuat data peminjaman dengan status "dipinjam".
-     * 3. Status book_item berubah menjadi "Dipinjam".
+     * 2. Sistem mengecek jumlah peminjaman aktif anggota.
+     * 3. Jika peminjaman aktif kurang dari 2, sistem membuat data peminjaman.
+     * 4. Status book_item berubah menjadi "Dipinjam".
      */
     public function store(Request $request): RedirectResponse
     {
@@ -109,6 +110,23 @@ class PeminjamanController extends Controller
         $data = $request->validate([
             'book_item_id' => ['required', 'exists:book_items,id'],
         ]);
+
+        // Hitung peminjaman aktif anggota.
+        // Aktif = status masih "dipinjam" atau "validasi pengembalian".
+        // Status "dikembalikan" tidak dihitung.
+        $jumlahPeminjamanAktif = Peminjaman::where('user_id', $authUser->id)
+            ->whereIn('status_peminjaman', [
+                Peminjaman::STATUS_DIPINJAM,
+                Peminjaman::STATUS_VALIDASI_PENGEMBALIAN,
+            ])
+            ->count();
+
+        if ($jumlahPeminjamanAktif >= 2) {
+            return back()->with(
+                'error',
+                'Anda sudah memiliki 2 peminjaman aktif. Kembalikan salah satu buku terlebih dahulu sebelum meminjam lagi.'
+            );
+        }
 
         $peminjaman = DB::transaction(function () use ($authUser, $data) {
             $bookItem = BookItem::lockForUpdate()->findOrFail($data['book_item_id']);

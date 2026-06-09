@@ -123,8 +123,17 @@
                     <input type="text"
                            name="no_hp"
                            value="{{ old('no_hp') }}"
+                           minlength="10"
+                           maxlength="13"
+                           pattern="08[0-9]{8,11}"
+                           inputmode="numeric"
+                           title="Nomor HP harus diawali 08 dan berisi 10 sampai 13 digit angka"
                            placeholder="Contoh: 081234567890"
                            class="w-full px-4 py-3 rounded-xl border border-[#BBE1FA] bg-[#F4F9FD] focus:bg-white focus:border-[#3282B8] focus:ring focus:ring-[#3282B8]/20 text-[#0F4C75] font-semibold text-sm transition-colors outline-none placeholder-[#0F4C75]/40">
+
+                    <p class="text-[10px] font-bold text-[#0F4C75] opacity-60 mt-2 uppercase tracking-wide">
+                        Nomor HP harus diawali 08 dan terdiri dari 10–13 digit angka.
+                    </p>
 
                     @error('no_hp')
                         <span class="text-[#D32F2F] text-xs font-bold mt-1.5 block">{{ $message }}</span>
