@@ -12,7 +12,7 @@ class Wishlist extends Model
 
     // Tentukan tabel jika nama tabelnya bukan bawaan plural (meskipun defaultnya 'wishlists')
     protected $table = 'wishlists';
-
+    public $timestamps = false;
     // Kolom apa saja yang boleh diisi (Mass Assignment)
     protected $fillable = [
         'user_id',

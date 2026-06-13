@@ -8,6 +8,8 @@ use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Middleware\CheckRole;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DendaController;
+use App\Http\Controllers\WishlistController;
 
 // =============================================================================
 // AUTH — Google OAuth
@@ -123,4 +125,43 @@ Route::middleware(['auth'])->group(function () {
 
     Route::patch('peminjamans/{peminjaman}/status', [PeminjamanController::class, 'updateStatus'])
         ->name('peminjamans.updateStatus');
+
+
+    // -------------------------------------------------------------------------
+    // WISHLIST (Anggota Only)
+    // -------------------------------------------------------------------------
+    Route::get('/wishlists', [WishlistController::class, 'index']);
+
+    Route::resource('wishlists', WishlistController::class)
+        ->only(['index', 'store', 'destroy']);
+
+    Route::post('wishlists/toggle', [WishlistController::class, 'toggle'])
+        ->name('wishlists.toggle');
+
+    // -------------------------------------------------------------------------
+    // DENDA
+    // -------------------------------------------------------------------------
+    Route::get('/dendas', [DendaController::class, 'index']);
+
+    Route::resource('dendas', DendaController::class)
+        ->only(['index', 'show']);
+
+    Route::post('dendas/{denda}/pay', [DendaController::class, 'pay'])
+        ->name('dendas.pay');
+
+    Route::patch('dendas/{denda}/status', [DendaController::class, 'updateStatus'])
+        ->name('dendas.updateStatus');
+
+    Route::post('dendas/generate/{peminjaman}', [DendaController::class, 'generate'])
+        ->name('dendas.generate');
+
+    // -------------------------------------------------------------------------
+    // EXPORT DATA (Admin & Pustakawan Only)
+    // -------------------------------------------------------------------------
+    Route::prefix('exports')->name('exports.')->group(function () {
+        Route::get('peminjamans', [ExportController::class, 'peminjamans'])->name('peminjamans');
+        Route::get('books', [ExportController::class, 'books'])->name('books');
+        Route::get('users', [ExportController::class, 'users'])->name('users');
+        Route::get('dendas', [ExportController::class, 'dendas'])->name('dendas');
+    });
 });

@@ -53,7 +53,7 @@ class BookController extends Controller
         return view('books.index', compact('books', 'kategoris'));
     }
 
-    // =========================================================================
+// =========================================================================
     // SHOW — Detail satu buku
     // =========================================================================
 
@@ -66,7 +66,19 @@ class BookController extends Controller
         // Load eksemplar dan riwayat peminjaman aktif
         $book->load(['bookItems', 'wishlists']);
 
-        return view('books.show', compact('book'));
+        // 🟩 AMBIL USER YANG SEDANG LOGIN
+        $user = request()->user();
+
+        // 🟩 CEK APAKAH USER SUDAH MENAMBAHKAN BUKU INI KE WISHLIST
+        $inWishlist = false;
+        if ($user && $user->isAnggota()) {
+            $inWishlist = \App\Models\Wishlist::where('user_id', $user->id)
+                ->where('book_id', $book->id)
+                ->exists();
+        }
+
+        // 🟩 KIRIM 'book' DAN 'inWishlist' SEKALIGUS KE VIEW
+        return view('books.show', compact('book', 'inWishlist'));
     }
 
     // =========================================================================

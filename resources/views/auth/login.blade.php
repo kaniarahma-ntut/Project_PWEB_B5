@@ -120,8 +120,7 @@
                 </div>
             @endif
 
-            <div class="mt-8">
-                <!-- Sesuai arahan AuthController, endpoint adalah /auth/google -->
+                <!-- Google OAuth Button -->
                 <a href="{{ url('/auth/google') }}"
                    class="group w-full flex items-center justify-center py-3.5 px-4 bg-electric hover:bg-navy text-base transition-colors duration-300 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-electric rounded-sm relative overflow-hidden">
 

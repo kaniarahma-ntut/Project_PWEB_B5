@@ -18,17 +18,25 @@
                 Manajemen Akun
             </h1>
             <p class="text-sm font-opensans text-[#0F4C75] opacity-80 mt-1">
-                Kelola akun admin, pustakawan, anggota, dan verifikasi pendaftaran akun baru.
+                Kelola akun admin, pustakawan, dan anggota Smart Library.
             </p>
         </div>
 
-        <a href="{{ route('users.create') }}"
-           class="inline-flex items-center px-4 py-2 bg-[#3282B8] hover:bg-[#1B262C] text-white font-montserrat text-xs font-bold rounded-lg transition-colors shadow-[0_4px_10px_rgba(50,130,184,0.2)]">
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-            </svg>
-            Tambah Akun
-        </a>
+        <div class="flex gap-2">
+            <a href="{{ route('exports.users') }}" class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-montserrat text-xs font-bold rounded-lg transition-colors shadow-md">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                Export CSV
+            </a>
+            <a href="{{ route('users.create') }}"
+               class="inline-flex items-center px-4 py-2 bg-[#3282B8] hover:bg-[#1B262C] text-white font-montserrat text-xs font-bold rounded-lg transition-colors shadow-[0_4px_10px_rgba(50,130,184,0.2)]">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Tambah Akun
+            </a>
+        </div>
     </div>
 
     {{-- FILTER --}}
@@ -54,7 +62,7 @@
         </div>
 
         {{-- Filter Role --}}
-        <div class="w-full md:w-44 mb-4 md:mb-0 md:mr-4">
+        <div class="w-full md:w-48 mb-4 md:mb-0 md:mr-4">
             <select name="role"
                     class="w-full px-4 py-2.5 rounded-lg border border-[#BBE1FA] focus:border-[#3282B8] focus:ring focus:ring-[#BBE1FA] focus:ring-opacity-50 text-[#0F4C75] font-opensans font-semibold text-sm transition-colors cursor-pointer bg-[#F4F9FD] focus:bg-white outline-none">
                 <option value="">Semua Role</option>
@@ -70,38 +78,23 @@
             </select>
         </div>
 
-        {{-- Filter Verifikasi --}}
-        <div class="w-full md:w-52 mb-4 md:mb-0 md:mr-4">
-            <select name="status_verifikasi"
-                    class="w-full px-4 py-2.5 rounded-lg border border-[#BBE1FA] focus:border-[#3282B8] focus:ring focus:ring-[#BBE1FA] focus:ring-opacity-50 text-[#0F4C75] font-opensans font-semibold text-sm transition-colors cursor-pointer bg-[#F4F9FD] focus:bg-white outline-none">
-                <option value="">Semua Verifikasi</option>
-                <option value="pending" {{ request('status_verifikasi') === 'pending' ? 'selected' : '' }}>
-                    Menunggu Verifikasi
-                </option>
-                <option value="approved" {{ request('status_verifikasi') === 'approved' ? 'selected' : '' }}>
-                    Disetujui
-                </option>
-                <option value="rejected" {{ request('status_verifikasi') === 'rejected' ? 'selected' : '' }}>
-                    Ditolak
-                </option>
-            </select>
-        </div>
-
-        {{-- Filter Status Akun --}}
-        <div class="w-full md:w-44 mb-4 md:mb-0 md:mr-4">
-            <select name="tampilkan"
-                    class="w-full px-4 py-2.5 rounded-lg border border-[#BBE1FA] focus:border-[#3282B8] focus:ring focus:ring-[#BBE1FA] focus:ring-opacity-50 text-[#0F4C75] font-opensans font-semibold text-sm transition-colors cursor-pointer bg-[#F4F9FD] focus:bg-white outline-none">
-                <option value="aktif" {{ request('tampilkan', 'aktif') === 'aktif' ? 'selected' : '' }}>
-                    Hanya Aktif
-                </option>
-                <option value="nonaktif" {{ request('tampilkan') === 'nonaktif' ? 'selected' : '' }}>
-                    Hanya Nonaktif
-                </option>
-                <option value="semua" {{ request('tampilkan') === 'semua' ? 'selected' : '' }}>
-                    Semua Akun
-                </option>
-            </select>
-        </div>
+        {{-- Filter Status - Only for Admin --}}
+        @if (auth()->user()->isAdmin())
+            <div class="w-full md:w-48 mb-4 md:mb-0 md:mr-4">
+                <select name="tampilkan"
+                        class="w-full px-4 py-2.5 rounded-lg border border-[#BBE1FA] focus:border-[#3282B8] focus:ring focus:ring-[#BBE1FA] focus:ring-opacity-50 text-[#0F4C75] font-opensans font-semibold text-sm transition-colors cursor-pointer bg-[#F4F9FD] focus:bg-white outline-none">
+                    <option value="aktif" {{ request('tampilkan', 'aktif') === 'aktif' ? 'selected' : '' }}>
+                        Hanya Aktif
+                    </option>
+                    <option value="nonaktif" {{ request('tampilkan') === 'nonaktif' ? 'selected' : '' }}>
+                        Hanya Nonaktif
+                    </option>
+                    <option value="semua" {{ request('tampilkan') === 'semua' ? 'selected' : '' }}>
+                        Semua Akun
+                    </option>
+                </select>
+            </div>
+        @endif
 
         <button type="submit"
                 class="w-full md:w-auto px-6 py-2.5 bg-[#1B262C] hover:bg-[#3282B8] text-white font-montserrat text-xs font-bold rounded-lg transition-colors shadow-md">
@@ -126,9 +119,6 @@
                             Kontak
                         </th>
                         <th class="px-5 py-4 font-montserrat text-xs font-bold text-[#1B262C] uppercase tracking-wider">
-                            Verifikasi
-                        </th>
-                        <th class="px-5 py-4 font-montserrat text-xs font-bold text-[#1B262C] uppercase tracking-wider">
                             Status
                         </th>
                         <th class="px-5 py-4 font-montserrat text-xs font-bold text-[#1B262C] uppercase tracking-wider text-right">
@@ -139,10 +129,6 @@
 
                 <tbody class="divide-y divide-[#BBE1FA]/70">
                     @forelse ($users as $user)
-                        @php
-                            $statusVerifikasi = $user->status_verifikasi ?? 'approved';
-                        @endphp
-
                         <tr class="hover:bg-[#F4F9FD] transition-colors {{ $user->trashed() ? 'opacity-70 bg-red-50/40' : '' }}">
 
                             {{-- Akun --}}
@@ -150,7 +136,7 @@
                                 <div class="flex items-center">
                                     <div class="w-11 h-11 rounded-full bg-[#BBE1FA]/50 border border-[#BBE1FA] flex items-center justify-center overflow-hidden mr-3 flex-shrink-0">
                                         @if ($user->foto_profil)
-                                            <img src="{{ str_starts_with($user->foto_profil, 'http') ? $user->foto_profil : asset('storage/' . $user->foto_profil) }}"
+                                            <img src="{{ asset('storage/' . $user->foto_profil) }}"
                                                  alt="Foto {{ $user->nama_lengkap }}"
                                                  class="w-full h-full object-cover">
                                         @else
@@ -195,23 +181,6 @@
                                 </p>
                             </td>
 
-                            {{-- Verifikasi --}}
-                            <td class="px-5 py-4">
-                                @if ($statusVerifikasi === 'pending')
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-md bg-yellow-100 text-yellow-700 text-[10px] font-montserrat font-bold uppercase tracking-wider">
-                                        Menunggu
-                                    </span>
-                                @elseif ($statusVerifikasi === 'rejected')
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-md bg-red-100 text-red-700 text-[10px] font-montserrat font-bold uppercase tracking-wider">
-                                        Ditolak
-                                    </span>
-                                @else
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-md bg-green-100 text-green-700 text-[10px] font-montserrat font-bold uppercase tracking-wider">
-                                        Disetujui
-                                    </span>
-                                @endif
-                            </td>
-
                             {{-- Status --}}
                             <td class="px-5 py-4">
                                 @if ($user->trashed())
@@ -227,53 +196,12 @@
 
                             {{-- Aksi --}}
                             <td class="px-5 py-4">
-                                <div class="flex justify-end items-center gap-2 flex-wrap">
+                                <div class="flex justify-end items-center gap-2">
 
                                     <a href="{{ route('users.show', $user->id) }}"
                                        class="inline-flex items-center justify-center px-3 py-2 rounded-lg bg-[#F4F9FD] text-[#3282B8] hover:bg-[#3282B8] hover:text-white font-montserrat text-[10px] font-bold uppercase tracking-wider transition-colors">
                                         Detail
                                     </a>
-
-                                    {{-- Aksi Verifikasi --}}
-                                    @if (! $user->trashed())
-                                        @if ($statusVerifikasi === 'pending')
-                                            <form action="{{ route('users.approve', $user->id) }}"
-                                                  method="POST"
-                                                  onsubmit="return confirm('Setujui akun ini?')">
-                                                @csrf
-                                                @method('PATCH')
-
-                                                <button type="submit"
-                                                        class="inline-flex items-center justify-center px-3 py-2 rounded-lg bg-green-50 text-green-700 hover:bg-green-600 hover:text-white font-montserrat text-[10px] font-bold uppercase tracking-wider transition-colors">
-                                                    Setujui
-                                                </button>
-                                            </form>
-
-                                            <form action="{{ route('users.reject', $user->id) }}"
-                                                  method="POST"
-                                                  onsubmit="return confirm('Tolak akun ini?')">
-                                                @csrf
-                                                @method('PATCH')
-
-                                                <button type="submit"
-                                                        class="inline-flex items-center justify-center px-3 py-2 rounded-lg bg-red-50 text-red-700 hover:bg-red-600 hover:text-white font-montserrat text-[10px] font-bold uppercase tracking-wider transition-colors">
-                                                    Tolak
-                                                </button>
-                                            </form>
-                                        @elseif ($statusVerifikasi === 'rejected')
-                                            <form action="{{ route('users.approve', $user->id) }}"
-                                                  method="POST"
-                                                  onsubmit="return confirm('Setujui kembali akun ini?')">
-                                                @csrf
-                                                @method('PATCH')
-
-                                                <button type="submit"
-                                                        class="inline-flex items-center justify-center px-3 py-2 rounded-lg bg-green-50 text-green-700 hover:bg-green-600 hover:text-white font-montserrat text-[10px] font-bold uppercase tracking-wider transition-colors">
-                                                    Setujui
-                                                </button>
-                                            </form>
-                                        @endif
-                                    @endif
 
                                     @if (! $user->trashed())
                                         <a href="{{ route('users.edit', $user->id) }}"
@@ -281,29 +209,33 @@
                                             Edit
                                         </a>
 
-                                        <form action="{{ route('users.destroy', $user->id) }}"
-                                              method="POST"
-                                              onsubmit="return confirm('Yakin ingin menonaktifkan akun ini?')">
-                                            @csrf
-                                            @method('DELETE')
+                                        @if (auth()->user()->isAdmin())
+                                            <form action="{{ route('users.destroy', $user->id) }}"
+                                                  method="POST"
+                                                  onsubmit="return confirm('Yakin ingin menonaktifkan akun ini?')">
+                                                @csrf
+                                                @method('DELETE')
 
-                                            <button type="submit"
-                                                    class="inline-flex items-center justify-center px-3 py-2 rounded-lg bg-red-50 text-red-700 hover:bg-red-600 hover:text-white font-montserrat text-[10px] font-bold uppercase tracking-wider transition-colors">
-                                                Nonaktifkan
-                                            </button>
-                                        </form>
+                                                <button type="submit"
+                                                        class="inline-flex items-center justify-center px-3 py-2 rounded-lg bg-red-50 text-red-700 hover:bg-red-600 hover:text-white font-montserrat text-[10px] font-bold uppercase tracking-wider transition-colors">
+                                                    Nonaktifkan
+                                                </button>
+                                            </form>
+                                        @endif
                                     @else
-                                        <form action="{{ route('users.restore', $user->id) }}"
-                                              method="POST"
-                                              onsubmit="return confirm('Pulihkan akun ini?')">
-                                            @csrf
-                                            @method('PATCH')
+                                        @if (auth()->user()->isAdmin())
+                                            <form action="{{ route('users.restore', $user->id) }}"
+                                                  method="POST"
+                                                  onsubmit="return confirm('Pulihkan akun ini?')">
+                                                @csrf
+                                                @method('PATCH')
 
-                                            <button type="submit"
-                                                    class="inline-flex items-center justify-center px-3 py-2 rounded-lg bg-green-50 text-green-700 hover:bg-green-600 hover:text-white font-montserrat text-[10px] font-bold uppercase tracking-wider transition-colors">
-                                                Pulihkan
-                                            </button>
-                                        </form>
+                                                <button type="submit"
+                                                        class="inline-flex items-center justify-center px-3 py-2 rounded-lg bg-green-50 text-green-700 hover:bg-green-600 hover:text-white font-montserrat text-[10px] font-bold uppercase tracking-wider transition-colors">
+                                                    Pulihkan
+                                                </button>
+                                            </form>
+                                        @endif
                                     @endif
 
                                 </div>
@@ -311,7 +243,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6">
+                            <td colspan="5">
                                 <div class="py-16 flex flex-col items-center justify-center">
                                     <div class="w-16 h-16 bg-[#F4F9FD] rounded-full flex items-center justify-center text-[#0F4C75] opacity-50 mb-4">
                                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -325,7 +257,7 @@
                                         Akun Tidak Ditemukan
                                     </p>
                                     <p class="font-opensans text-sm font-semibold text-[#0F4C75] opacity-70 text-center max-w-md">
-                                        Coba gunakan kata kunci lain atau sesuaikan filter role, verifikasi, dan status akun.
+                                        Coba gunakan kata kunci lain atau sesuaikan filter role dan status akun.
                                     </p>
                                 </div>
                             </td>

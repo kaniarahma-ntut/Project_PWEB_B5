@@ -15,15 +15,23 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Membuat Akun Pustakawan (Admin)
+        // 1. Membuat Akun Admin
         User::create([
-            'nama_lengkap' => 'Admin Pustakawan', // Disesuaikan dengan migration: nama_lengkap
+            'nama_lengkap' => 'Super Admin',
+            'email' => 'admin@library.com',
+            'password' => Hash::make('password123'),
+            'role' => 'admin',
+        ]);
+
+        // 2. Membuat Akun Pustakawan
+        User::create([
+            'nama_lengkap' => 'Admin Pustakawan',
             'email' => 'pustakawan@library.com',
             'password' => Hash::make('password123'),
             'role' => 'pustakawan',
         ]);
 
-        // 2. Membuat Akun Anggota
+        // 3. Membuat Akun Anggota
         User::create([
             'nama_lengkap' => 'Kania Rahma Meneling',
             'email' => 'kania@fasilkom.unej.ac.id',
@@ -45,7 +53,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'anggota',
         ]);
 
-        // 3. Menambahkan Koleksi Buku
+        // 4. Menambahkan Koleksi Buku
         $book1 = Book::create([
             'judul' => 'Panduan Lengkap Google Cloud Platform (JuaraGCP)', // title -> judul
             'penulis' => 'Tech Explorer', // author -> penulis
@@ -59,7 +67,7 @@ class DatabaseSeeder extends Seeder
             'kategori' => 'Internet of Things',
         ]);
 
-        // 4. Menambahkan Stok Buku Fisik (Book Items)
+        // 5. Menambahkan Stok Buku Fisik (Book Items)
         BookItem::create([
             'book_id' => $book1->id,
             'kode_buku' => 'GCP-001',

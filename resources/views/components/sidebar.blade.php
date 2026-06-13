@@ -33,6 +33,18 @@
             </div>
         </a>
 
+        <a href="{{ route('users.edit', auth()->id()) }}"
+           class="group relative flex items-center gap-3 p-3 rounded-xl font-semibold transition-all duration-300 overflow-hidden {{ request()->routeIs('users.edit') && request()->route('user') == auth()->id() ? 'bg-[#3282B8] text-white shadow-[0_4px_12px_rgba(50,130,184,0.25)]' : 'text-[#0F4C75] hover:bg-[#F4F9FD] hover:text-[#3282B8]' }}">
+            <div class="relative z-10 flex items-center gap-3 w-full">
+                <svg class="w-5 h-5 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+                <span class="transform transition-transform duration-300 group-hover:translate-x-1">
+                    Profil
+                </span>
+            </div>
+        </a>
+
         <a href="{{ route('books.index') }}"
            class="group relative flex items-center gap-3 p-3 rounded-xl font-semibold transition-all duration-300 overflow-hidden {{ request()->routeIs('books.*') || request()->routeIs('book-items.*') ? 'bg-[#3282B8] text-white shadow-[0_4px_12px_rgba(50,130,184,0.25)]' : 'text-[#0F4C75] hover:bg-[#F4F9FD] hover:text-[#3282B8]' }}">
             <div class="relative z-10 flex items-center gap-3 w-full">
@@ -45,15 +57,29 @@
             </div>
         </a>
 
-        @if(auth()->user()->isAdmin())
+        @if(auth()->user()->isAnggota())
+            <a href="{{ route('wishlists.index') }}"
+               class="group relative flex items-center gap-3 p-3 rounded-xl font-semibold transition-all duration-300 overflow-hidden {{ request()->routeIs('wishlists.*') ? 'bg-[#3282B8] text-white shadow-[0_4px_12px_rgba(50,130,184,0.25)]' : 'text-[#0F4C75] hover:bg-[#F4F9FD] hover:text-[#3282B8]' }}">
+                <div class="relative z-10 flex items-center gap-3 w-full">
+                    <svg class="w-5 h-5 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                    </svg>
+                    <span class="transform transition-transform duration-300 group-hover:translate-x-1">
+                        Wishlist
+                    </span>
+                </div>
+            </a>
+        @endif
+
+        @if(auth()->user()->isAdmin() || auth()->user()->isPustakawan())
             <a href="{{ route('users.index') }}"
-               class="group relative flex items-center gap-3 p-3 rounded-xl font-semibold transition-all duration-300 overflow-hidden {{ request()->routeIs('users.*') ? 'bg-[#3282B8] text-white shadow-[0_4px_12px_rgba(50,130,184,0.25)]' : 'text-[#0F4C75] hover:bg-[#F4F9FD] hover:text-[#3282B8]' }}">
+               class="group relative flex items-center gap-3 p-3 rounded-xl font-semibold transition-all duration-300 overflow-hidden {{ request()->routeIs('users.*') && !(request()->routeIs('users.edit') && request()->route('user') == auth()->id()) ? 'bg-[#3282B8] text-white shadow-[0_4px_12px_rgba(50,130,184,0.25)]' : 'text-[#0F4C75] hover:bg-[#F4F9FD] hover:text-[#3282B8]' }}">
                 <div class="relative z-10 flex items-center gap-3 w-full">
                     <svg class="w-5 h-5 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
                     </svg>
                     <span class="transform transition-transform duration-300 group-hover:translate-x-1">
-                        Akun
+                        Manajemen Akun
                     </span>
                 </div>
             </a>
@@ -75,8 +101,8 @@
             </div>
         </a>
 
-        <a href="#"
-           class="group relative flex items-center gap-3 p-3 rounded-xl font-semibold transition-all duration-300 overflow-hidden text-[#0F4C75] hover:bg-[#F4F9FD] hover:text-[#3282B8]">
+        <a href="{{ route('dendas.index') }}"
+           class="group relative flex items-center gap-3 p-3 rounded-xl font-semibold transition-all duration-300 overflow-hidden {{ request()->routeIs('dendas.*') ? 'bg-[#3282B8] text-white shadow-[0_4px_12px_rgba(50,130,184,0.25)]' : 'text-[#0F4C75] hover:bg-[#F4F9FD] hover:text-[#3282B8]' }}">
             <div class="relative z-10 flex items-center gap-3 w-full">
                 <svg class="w-5 h-5 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z"></path>

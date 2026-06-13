@@ -35,6 +35,7 @@ class AuthController extends Controller
         try {
             $googleUser = Socialite::driver('google')->user();
         } catch (\Exception $e) {
+            // dd($e->getMessage(), $e);
             return redirect()
                 ->route('login')
                 ->with('error', 'Login dengan Google gagal. Silakan coba lagi.');

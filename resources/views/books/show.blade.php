@@ -8,8 +8,23 @@
         &larr; Kembali ke Katalog
     </a>
 
-    @if(auth()->user()->isAdmin() || auth()->user()->isPustakawan())
-        <div class="flex gap-2">
+    <div class="flex gap-2">
+        {{-- Wishlist Button (Anggota Only) --}}
+        @if(auth()->user()->isAnggota())
+            <form action="{{ route('wishlists.toggle') }}" method="POST">
+                @csrf
+                <input type="hidden" name="book_id" value="{{ $book->id }}">
+                <button type="submit"
+                        class="flex items-center gap-2 {{ $inWishlist ? 'bg-red-500 hover:bg-red-600' : 'bg-[#3282B8] hover:bg-[#1B262C]' }} text-white py-2 px-4 rounded text-sm font-semibold transition">
+                    <svg class="w-5 h-5" fill="{{ $inWishlist ? 'currentColor' : 'none' }}" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                    </svg>
+                    {{ $inWishlist ? 'Hapus dari Wishlist' : 'Tambah ke Wishlist' }}
+                </button>
+            </form>
+        @endif
+
+        @if(auth()->user()->isAdmin() || auth()->user()->isPustakawan())
             @if($book->trashed())
                 @if(auth()->user()->isAdmin())
                     <form action="{{ route('books.restore', $book->id) }}" method="POST">
@@ -38,9 +53,10 @@
                     </button>
                 </form>
             @endif
-        </div>
-    @endif
+        @endif
+    </div>
 </div>
+
 
 <div class="bg-white rounded-lg border border-[#BBE1FA] shadow-sm overflow-hidden flex flex-col md:flex-row mb-8 relative">
     @if($book->trashed())
@@ -100,34 +116,12 @@
     </div>
 </div>
 
-@php
-    $jumlahPeminjamanAktif = 0;
-
-    if (auth()->user()->isAnggota()) {
-        $jumlahPeminjamanAktif = auth()->user()
-            ->peminjamans()
-            ->whereIn('status_peminjaman', [
-                \App\Models\Peminjaman::STATUS_DIPINJAM,
-                \App\Models\Peminjaman::STATUS_VALIDASI_PENGEMBALIAN,
-            ])
-            ->count();
-    }
-@endphp
-
 {{-- DAFTAR EKSEMPLAR --}}
 <div class="bg-white rounded-2xl border border-[#BBE1FA] shadow-[0_2px_16px_rgba(27,38,44,0.04)] overflow-hidden">
     <div class="p-6 border-b border-[#BBE1FA] flex justify-between items-center bg-[#F4F9FD]/50">
-        <div>
-            <h3 class="text-lg font-montserrat font-bold text-[#1B262C]">
-                Daftar Eksemplar
-            </h3>
-
-            @if(auth()->user()->isAnggota())
-                <p class="text-xs text-[#0F4C75] opacity-70 mt-1">
-                    Peminjaman aktif Anda: {{ $jumlahPeminjamanAktif }} / 2 buku.
-                </p>
-            @endif
-        </div>
+        <h3 class="text-lg font-montserrat font-bold text-[#1B262C]">
+            Daftar Eksemplar
+        </h3>
 
         @if(auth()->user()->isAdmin() || auth()->user()->isPustakawan())
             <a href="{{ route('book-items.create', $book->id) }}"
@@ -193,7 +187,7 @@
                                     </a>
                                 @endif
 
-                                @if(auth()->user()->isAnggota() && $item->status_ketersediaan === 'Tersedia' && $jumlahPeminjamanAktif < 2)
+                                @if(auth()->user()->isAnggota() && $item->status_ketersediaan === 'Tersedia')
                                     <form action="{{ route('peminjamans.store') }}"
                                           method="POST"
                                           onsubmit="return confirm('Pinjam eksemplar buku ini?')">
@@ -206,10 +200,6 @@
                                             Pinjam
                                         </button>
                                     </form>
-                                @elseif(auth()->user()->isAnggota() && $jumlahPeminjamanAktif >= 2)
-                                    <span class="text-[10px] font-bold text-red-600 uppercase tracking-wider">
-                                        Batas pinjam tercapai
-                                    </span>
                                 @elseif(auth()->user()->isAnggota() && $item->status_ketersediaan !== 'Tersedia')
                                     <span class="text-[10px] font-bold text-[#0F4C75]/50 uppercase tracking-wider">
                                         Tidak tersedia

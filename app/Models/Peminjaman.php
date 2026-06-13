@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Peminjaman extends Model
 {
@@ -59,6 +60,14 @@ class Peminjaman extends Model
         return $this->belongsTo(BookItem::class);
     }
 
+    /**
+     * Setiap peminjaman bisa memiliki satu denda (jika terlambat).
+     */
+    public function denda(): HasOne
+    {
+        return $this->hasOne(Denda::class);
+    }
+
     // =========================================================================
     // HELPER METHOD
     // =========================================================================
@@ -78,10 +87,30 @@ class Peminjaman extends Model
         return $this->status_peminjaman === self::STATUS_DIKEMBALIKAN;
     }
 
+    /**
+     * Cek apakah peminjaman terlambat.
+     */
     public function isTerlambat(): bool
     {
-        return $this->due_at !== null
-            && now()->greaterThan($this->due_at)
-            && $this->returned_at === null;
+        // Jika sudah dikembalikan, cek apakah returned_at > due_at
+        if ($this->returned_at) {
+            return $this->returned_at->greaterThan($this->due_at);
+        }
+
+        // Jika belum dikembalikan, cek apakah sekarang sudah lewat due_at
+        return now()->greaterThan($this->due_at) && !$this->returned_at;
+    }
+
+    /**
+     * Hitung jumlah hari keterlambatan.
+     */
+    public function getHariTerlambat(): int
+    {
+        if (!$this->isTerlambat()) {
+            return 0;
+        }
+
+        $tanggalKembali = $this->returned_at ?? now();
+        return (int) $this->due_at->diffInDays($tanggalKembali, false);
     }
 }
