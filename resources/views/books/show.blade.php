@@ -39,15 +39,15 @@
                 @endif
             @else
                 <a href="{{ route('books.edit', $book->id) }}"
-                   class="bg-[#3282B8] hover:bg-[#1B262C] text-white py-2 px-4 rounded text-sm font-semibold transition">
+                class="inline-flex items-center justify-center px-4 py-2.5 rounded-lg bg-[#3282B8] text-white hover:bg-[#1B262C] font-montserrat text-xs font-bold uppercase tracking-wide shadow-sm transition-all duration-200">
                     Edit Data
                 </a>
 
-                <form action="{{ route('books.destroy', $book->id) }}" method="POST">
+                <form action="{{ route('books.destroy', $book->id) }}" method="POST" class="inline-block">
                     @csrf
                     @method('DELETE')
                     <button type="submit"
-                            class="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded text-sm font-semibold transition"
+                            class="inline-flex items-center justify-center px-4 py-2.5 rounded-lg bg-red-600 text-white hover:bg-red-700 font-montserrat text-xs font-bold uppercase tracking-wide shadow-sm transition-all duration-200"
                             onclick="return confirm('Yakin ingin menonaktifkan buku ini?')">
                         Nonaktifkan
                     </button>
@@ -175,38 +175,36 @@
                         <td class="px-6 py-4 text-right">
                             <div class="flex justify-end items-center gap-2">
 
-                                <a href="{{ route('book-items.show', $item->id) }}"
-                                   class="text-[#3282B8] hover:text-[#1B262C] text-xs font-bold">
-                                    Detail
+                            <a href="{{ route('book-items.show', $item->id) }}"
+                            class="inline-flex items-center justify-center px-3 py-2 rounded-lg bg-[#F4F9FD] text-[#3282B8] hover:bg-[#3282B8] hover:text-white font-montserrat text-[10px] font-bold uppercase tracking-wider transition-colors">
+                                Detail
+                            </a>
+
+                            @if(auth()->user()->isAdmin() || auth()->user()->isPustakawan())
+                                <a href="{{ route('book-items.edit', $item->id) }}"
+                                class="inline-flex items-center justify-center px-3 py-2 rounded-lg bg-yellow-50 text-yellow-700 hover:bg-yellow-500 hover:text-white font-montserrat text-[10px] font-bold uppercase tracking-wider transition-colors">
+                                    Edit
                                 </a>
+                            @endif
 
-                                @if(auth()->user()->isAdmin() || auth()->user()->isPustakawan())
-                                    <a href="{{ route('book-items.edit', $item->id) }}"
-                                       class="text-[#0F4C75] hover:text-[#1B262C] text-xs font-bold">
-                                        Edit
-                                    </a>
-                                @endif
+                            @if(auth()->user()->isAnggota() && $item->status_ketersediaan === 'Tersedia')
+                                <form action="{{ route('peminjamans.store') }}"
+                                    method="POST"
+                                    onsubmit="return confirm('Pinjam eksemplar buku ini?')">
+                                    @csrf
+                                    <input type="hidden" name="book_item_id" value="{{ $item->id }}">
+                                    <button type="submit"
+                                            class="px-3 py-1.5 rounded-lg bg-[#3282B8] hover:bg-[#1B262C] text-white text-[10px] font-bold uppercase tracking-wider transition">
+                                        Pinjam
+                                    </button>
+                                </form>
+                            @elseif(auth()->user()->isAnggota() && $item->status_ketersediaan !== 'Tersedia')
+                                <span class="text-[10px] font-bold text-[#0F4C75]/50 uppercase tracking-wider">
+                                    Tidak tersedia
+                                </span>
+                            @endif
 
-                                @if(auth()->user()->isAnggota() && $item->status_ketersediaan === 'Tersedia')
-                                    <form action="{{ route('peminjamans.store') }}"
-                                          method="POST"
-                                          onsubmit="return confirm('Pinjam eksemplar buku ini?')">
-                                        @csrf
-
-                                        <input type="hidden" name="book_item_id" value="{{ $item->id }}">
-
-                                        <button type="submit"
-                                                class="px-3 py-1.5 rounded-lg bg-[#3282B8] hover:bg-[#1B262C] text-white text-[10px] font-bold uppercase tracking-wider transition">
-                                            Pinjam
-                                        </button>
-                                    </form>
-                                @elseif(auth()->user()->isAnggota() && $item->status_ketersediaan !== 'Tersedia')
-                                    <span class="text-[10px] font-bold text-[#0F4C75]/50 uppercase tracking-wider">
-                                        Tidak tersedia
-                                    </span>
-                                @endif
-
-                            </div>
+                        </div>
                         </td>
                     </tr>
                 @empty

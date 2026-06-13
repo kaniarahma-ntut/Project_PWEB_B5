@@ -155,13 +155,4 @@ Route::middleware(['auth'])->group(function () {
     Route::post('dendas/generate/{peminjaman}', [DendaController::class, 'generate'])
         ->name('dendas.generate');
 
-    // -------------------------------------------------------------------------
-    // EXPORT DATA (Admin & Pustakawan Only)
-    // -------------------------------------------------------------------------
-    Route::prefix('exports')->name('exports.')->group(function () {
-        Route::get('peminjamans', [ExportController::class, 'peminjamans'])->name('peminjamans');
-        Route::get('books', [ExportController::class, 'books'])->name('books');
-        Route::get('users', [ExportController::class, 'users'])->name('users');
-        Route::get('dendas', [ExportController::class, 'dendas'])->name('dendas');
-    });
 });

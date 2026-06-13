@@ -46,10 +46,6 @@
                 {{ $bookItem->book->judul }}
             </h1>
             <p class="text-[#0F4C75] font-semibold mb-4">Penulis: {{ $bookItem->book->penulis }}</p>
-
-            <a href="{{ route('books.show', $bookItem->book_id) }}" class="text-sm font-bold text-[#3282B8] hover:text-[#1B262C] underline underline-offset-4">
-                Lihat Detail Lengkap Buku &rarr;
-            </a>
         </div>
 
         {{-- Info Eksemplar --}}
